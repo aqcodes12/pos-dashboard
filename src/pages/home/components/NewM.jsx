@@ -1,5 +1,5 @@
-import { Coffee, LayoutDashboard, Plus } from "lucide-react";
 import React from "react";
+import { NotebookPen, Plus } from "lucide-react";
 
 const NewM = () => {
   return (
@@ -7,9 +7,9 @@ const NewM = () => {
       {/* Header */}
       <div className="flex items-center gap-2">
         <span className="bg-primary/10 text-primary p-2 rounded-xl">
-          <LayoutDashboard size={20} />
+          <NotebookPen size={20} />
         </span>
-        <h3 className="text-sm font-semibold text-gray-700">New Menu</h3>
+        <h3 className="text-sm font-semibold text-gray-700">Sales</h3>
       </div>
 
       {/* Action Button */}
