@@ -11,12 +11,22 @@ import {
   NotebookPen,
   ShoppingBasket,
 } from "lucide-react";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import Footer from "./Footer";
 
 const Sidebar = () => {
   const [activeItem, setActiveItem] = useState("Dashboard");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  const navigate = useNavigate();
+
+  const routes = {
+    Dashboard: "/",
+    Products: "/products",
+    Sales: "/sales",
+    Invoice: "/invoice",
+    Settings: "/settings",
+  };
 
   const mainMenuItems = [
     { name: "Dashboard", icon: LayoutDashboard },
@@ -31,6 +41,7 @@ const Sidebar = () => {
   const handleMenuClick = (itemName) => {
     setActiveItem(itemName);
     setIsSidebarOpen(false);
+    navigate(routes[itemName]);
   };
 
   return (

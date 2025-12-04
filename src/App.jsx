@@ -4,6 +4,7 @@ import Sidebar from "./components/Sidebar";
 import HomePage from "./pages/home/HomePage";
 import Login from "./pages/auth/Login";
 import LoginPage from "./pages/auth/Login";
+import ProductsPage from "./pages/products/ProductsPage";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
             <Route path="/login" element={<LoginPage />} />
             <Route element={<Sidebar />}>
               <Route path="/" element={<HomePage />} />
+              <Route path="/products" element={<ProductsPage />} />
             </Route>
           </Routes>
         </Router>
