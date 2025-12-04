@@ -1,11 +1,12 @@
 import React from "react";
 
 const TopSelling = () => {
-  const totalOrders = 1099;
+  const totalOrders = 1342;
+
   const topItem = {
-    name: "Coffee Day Hot",
-    sold: 756,
-    percentage: 80.8,
+    name: "Fresh Chicken Breast",
+    sold: 980,
+    percentage: 73.0,
   };
 
   return (

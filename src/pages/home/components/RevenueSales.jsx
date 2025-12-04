@@ -102,7 +102,7 @@ const RevenueSales = () => {
             <Line
               type="monotone"
               dataKey="revenue"
-              stroke="#10B981"
+              stroke="#2D336B"
               strokeWidth={3}
               dot={false}
               activeDot={{ r: 6 }}

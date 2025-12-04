@@ -38,7 +38,7 @@ const TodaysPerformance = () => {
             d="M20 100 A80 80 0 0 1 180 100"
             pathLength="100"
             fill="none"
-            stroke="#10B981"
+            stroke="#2D336B"
             strokeWidth="14"
             strokeLinecap="round"
             strokeDasharray={`${revenuePct} 100`}
