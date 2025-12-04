@@ -6,6 +6,7 @@ import Login from "./pages/auth/Login";
 import LoginPage from "./pages/auth/Login";
 import ProductsPage from "./pages/products/ProductsPage";
 import SalesPage from "./pages/sales/SalesPage";
+import InvoicePage from "./pages/invoice/InvoicePage";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
               <Route path="/" element={<HomePage />} />
               <Route path="/products" element={<ProductsPage />} />
               <Route path="/sales" element={<SalesPage />} />
+              <Route path="/invoice" element={<InvoicePage />} />
             </Route>
           </Routes>
         </Router>
