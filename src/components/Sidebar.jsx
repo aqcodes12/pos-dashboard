@@ -11,14 +11,14 @@ import {
   NotebookPen,
   ShoppingBasket,
 } from "lucide-react";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import Footer from "./Footer";
 
 const Sidebar = () => {
-  const [activeItem, setActiveItem] = useState("Dashboard");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const navigate = useNavigate();
+  const location = useLocation();
 
   const routes = {
     Dashboard: "/",
@@ -36,13 +36,14 @@ const Sidebar = () => {
     { name: "Settings", icon: Settings },
   ];
 
-  const otherItems = [{ name: "Advance Settings", icon: Settings }];
-
   const handleMenuClick = (itemName) => {
-    setActiveItem(itemName);
     setIsSidebarOpen(false);
     navigate(routes[itemName]);
   };
+
+  const activeItem =
+    mainMenuItems.find((item) => routes[item.name] === location.pathname)
+      ?.name || "Dashboard";
 
   return (
     <div className="relative">
@@ -78,7 +79,8 @@ const Sidebar = () => {
           <nav className="space-y-1">
             {mainMenuItems.map((item) => {
               const Icon = item.icon;
-              const isActive = activeItem === item.name;
+              const isActive = location.pathname === routes[item.name];
+
               return (
                 <button
                   key={item.name}

@@ -7,6 +7,7 @@ import LoginPage from "./pages/auth/Login";
 import ProductsPage from "./pages/products/ProductsPage";
 import SalesPage from "./pages/sales/SalesPage";
 import InvoicePage from "./pages/invoice/InvoicePage";
+import SettingsPage from "./pages/settings/SettingsPage";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
               <Route path="/products" element={<ProductsPage />} />
               <Route path="/sales" element={<SalesPage />} />
               <Route path="/invoice" element={<InvoicePage />} />
+              <Route path="/settings" element={<SettingsPage />} />
             </Route>
           </Routes>
         </Router>
