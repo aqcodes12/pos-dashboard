@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Coffee } from "lucide-react";
+import { LayoutDashboard } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import BrandLogo from "../../assets/daily.png";
 
@@ -26,20 +26,15 @@ const LoginPage = () => {
   return (
     <div className="min-h-screen flex flex-col md:flex-row">
       {/* Left Side - Branding */}
-      <div className="hidden md:flex md:w-1/2 bg-emerald-50 items-center justify-center">
+      <div className="hidden md:flex md:w-1/2 bg-primary/50 items-center justify-center">
         <div className="text-center p-8">
           <div className="flex items-center justify-center mb-6">
-            {/* <span className="bg-emerald-100 text-primary p-3 rounded-2xl">
-              <Coffee size={28} />
-            </span> */}
-
-            <img src={BrandLogo} alt="" className="h-28 w-28" />
+            <span className="text-4xl md:text-7xl tracking-widest font-bold text-white">
+              POS
+            </span>
           </div>
-          <h1 className="text-3xl font-bold text-primary">
-            Welcome to Daily Cup
-          </h1>
-          <p className="text-gray-600 mt-3 text-sm">
-            Log in to manage your coffee shop dashboard.
+          <p className="text-white mt-3 text-xl">
+            Log in to manage your dashboard.
           </p>
         </div>
       </div>
@@ -48,7 +43,7 @@ const LoginPage = () => {
       <div className="flex flex-1 items-center justify-center p-6">
         <div className="w-full max-w-sm bg-white rounded-2xl shadow-md border border-gray-100 p-8">
           <div className="flex items-center justify-center mb-6">
-            <Coffee className="text-primary" size={28} />
+            <LayoutDashboard className="text-primary" size={28} />
           </div>
 
           <h2 className="text-xl font-semibold text-center text-gray-800 mb-6">

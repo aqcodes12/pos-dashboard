@@ -1,4 +1,4 @@
-import { Coffee, Plus } from "lucide-react";
+import { Coffee, LayoutDashboard, Plus } from "lucide-react";
 import React from "react";
 
 const NewM = () => {
@@ -6,8 +6,8 @@ const NewM = () => {
     <div className="flex justify-between items-center gap-5 border py-2 px-4 border-gray-200 rounded-2xl w-full">
       {/* Header */}
       <div className="flex items-center gap-2">
-        <span className="bg-emerald-50 text-primary p-2 rounded-xl">
-          <Coffee size={20} />
+        <span className="bg-primary/10 text-primary p-2 rounded-xl">
+          <LayoutDashboard size={20} />
         </span>
         <h3 className="text-sm font-semibold text-gray-700">New Menu</h3>
       </div>

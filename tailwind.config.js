@@ -7,8 +7,8 @@ export default {
         sans: ["Lato", "system-ui", "sans-serif"],
       },
       colors: {
-        primary: "#0499A0",
-        bgColor: "#FAFAFA",
+        primary: "#2D336B",
+        bgColor: "#FFF2F2",
       },
     },
   },

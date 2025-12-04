@@ -10,7 +10,7 @@ const Footer = () => {
         href="https://www.ex-ion.com/"
         target="_blank"
         rel="noopener noreferrer"
-        className="text-emerald-600 font-semibold hover:underline"
+        className="text-primary font-semibold hover:underline"
       >
         Ex-ion
       </a>{" "}

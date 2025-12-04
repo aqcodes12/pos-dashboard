@@ -1,9 +1,6 @@
 import React, { useState } from "react";
 import {
   LayoutDashboard,
-  Coffee,
-  ShoppingBag,
-  Users,
   BarChart3,
   Settings,
   Menu,
@@ -11,9 +8,10 @@ import {
   Search,
   Bell,
   User,
+  NotebookPen,
+  ShoppingBasket,
 } from "lucide-react";
 import { Outlet } from "react-router-dom";
-import BrandLogo from "../assets/daily.png";
 import Footer from "./Footer";
 
 const Sidebar = () => {
@@ -22,10 +20,10 @@ const Sidebar = () => {
 
   const mainMenuItems = [
     { name: "Dashboard", icon: LayoutDashboard },
-    { name: "Menu", icon: Coffee },
-    { name: "Orders", icon: ShoppingBag },
-    { name: "Customers", icon: Users },
-    { name: "Analytics Report", icon: BarChart3 },
+    { name: "Products", icon: ShoppingBasket },
+    { name: "Sales", icon: BarChart3 },
+    { name: "Invoice", icon: NotebookPen },
+    { name: "Settings", icon: Settings },
   ];
 
   const otherItems = [{ name: "Advance Settings", icon: Settings }];
@@ -59,14 +57,13 @@ const Sidebar = () => {
       >
         {/* Logo Section */}
         <div className="px-6 py-8 flex items-center justify-center gap-3">
-          <img src={BrandLogo} alt="Daily Cup" className="w-28 h-28" />
+          <span className="text-3xl md:text-4xl font-[700] text-primary tracking-widest">
+            POS
+          </span>
         </div>
 
         {/* Main Menu */}
         <div className="px-6 pb-4">
-          <h3 className="text-lg font-semibold text-gray-800 mb-4">
-            Main Menu
-          </h3>
           <nav className="space-y-1">
             {mainMenuItems.map((item) => {
               const Icon = item.icon;
@@ -78,35 +75,6 @@ const Sidebar = () => {
                   className={`w-full flex items-center gap-3 px-4 py-2 rounded-sm transition-colors ${
                     isActive
                       ? "bg-white text-primary border-l-4 border-primary"
-                      : "text-gray-600 hover:bg-gray-50"
-                  }`}
-                >
-                  <Icon
-                    className={`w-6 h-6 ${
-                      isActive ? "text-primary" : "text-gray-400"
-                    }`}
-                  />
-                  <span className="text-base font-medium">{item.name}</span>
-                </button>
-              );
-            })}
-          </nav>
-        </div>
-
-        {/* Other Section */}
-        <div className="px-6 pb-8">
-          <h3 className="text-lg font-semibold text-gray-800 mb-4">Others</h3>
-          <nav className="space-y-1">
-            {otherItems.map((item) => {
-              const Icon = item.icon;
-              const isActive = activeItem === item.name;
-              return (
-                <button
-                  key={item.name}
-                  onClick={() => handleMenuClick(item.name)}
-                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
-                    isActive
-                      ? "bg-emerald-50 text-primary border-l-4 border-primary"
                       : "text-gray-600 hover:bg-gray-50"
                   }`}
                 >
@@ -148,7 +116,7 @@ const Sidebar = () => {
                   <Bell className="w-5 h-5 text-gray-600" />
                 </button>
                 <div className="flex items-center gap-2">
-                  <div className="bg-emerald-50 p-2 rounded-full">
+                  <div className="bg-primary/5 p-2 rounded-full">
                     <User className="w-5 h-5 text-gray-600" />
                   </div>
                   <span className="text-sm font-medium text-gray-700">
