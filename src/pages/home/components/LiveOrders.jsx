@@ -40,7 +40,6 @@ const LiveOrders = () => {
             >
               <div>
                 <p className="text-gray-800 text-sm font-medium">
-                  {order.name}{" "}
                   <span className="text-gray-600 font-normal">
                     purchased {order.quantity}× {order.product}
                   </span>

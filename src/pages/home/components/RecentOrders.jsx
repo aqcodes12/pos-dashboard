@@ -60,8 +60,7 @@ const RecentOrders = () => {
           <thead>
             <tr className="text-gray-600 text-sm">
               <th className="py-2 px-3">Product Name</th>
-              <th className="py-2 px-3">Order ID</th>
-              <th className="py-2 px-3">Customer</th>
+              <th className="py-2 px-3">Invoice No</th>
               <th className="py-2 px-3">Price</th>
               <th className="py-2 px-3">Status</th>
               <th className="py-2 px-3 text-right">Action</th>
@@ -88,12 +87,6 @@ const RecentOrders = () => {
                 <td className="py-3 px-3">
                   <p className="font-medium text-gray-800">{order.orderId}</p>
                   <p className="text-gray-500 text-xs">{order.date}</p>
-                </td>
-
-                {/* Customer */}
-                <td className="py-3 px-3">
-                  <p className="font-medium text-gray-800">{order.customer}</p>
-                  <p className="text-gray-500 text-xs">{order.customerType}</p>
                 </td>
 
                 {/* Price */}
