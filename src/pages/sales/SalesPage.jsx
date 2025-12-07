@@ -318,7 +318,16 @@ const SalesTable = ({ sales }) => (
         ) : (
           sales.map((sale) => (
             <tr key={sale._id} className="border-b hover:bg-gray-50">
-              <td className="px-6 py-4">{sale.createdAt.substring(0, 16)}</td>
+              <td className="px-6 py-4">
+                {new Date(sale.createdAt).toLocaleString("en-US", {
+                  year: "numeric",
+                  month: "short",
+                  day: "numeric",
+                  hour: "numeric",
+                  minute: "numeric",
+                  hour12: true,
+                })}
+              </td>
 
               <td className="px-6 py-4">{sale.product.name}</td>
 
