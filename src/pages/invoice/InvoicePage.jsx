@@ -237,57 +237,68 @@ const InvoicePage = () => {
             </thead>
 
             <tbody className="text-gray-700 text-sm">
-              {invoices.map((inv) => (
-                <tr key={inv._id} className="border-t">
-                  <td className="py-3 px-4 font-semibold">
-                    #{inv.invoiceNumber}
-                  </td>
-
-                  <td className="py-3 px-4">{formatDate(inv.createdAt)}</td>
-
-                  <td className="py-3 px-4">{inv.totalAmount} SAR</td>
-
-                  {/* VIEW BUTTON */}
-                  <td className="py-3 px-4">
-                    <button
-                      onClick={() => openInvoice(inv._id)}
-                      className="flex items-center gap-1 bg-primary/10 text-primary px-3 py-1 rounded-md hover:bg-primary/20"
-                    >
-                      <FileText size={16} /> View
-                    </button>
-                  </td>
-
-                  {/* ACTION BUTTONS */}
-                  <td className="py-3 px-4 flex items-center gap-3">
-                    {/* UPDATE ICON BUTTON */}
-                    <button
-                      onClick={() => {
-                        fetchSales();
-                        setEditMode(true);
-                        setInvoiceToEdit(inv._id);
-
-                        setSelectedSales(inv.sales.map((s) => s._id));
-                        setCustomerName(inv.customerName);
-
-                        setCreateModal(true);
-                      }}
-                      className="p-2 rounded-md bg-yellow-100 text-yellow-700 hover:bg-yellow-200 transition"
-                      title="Update Invoice"
-                    >
-                      <Pencil size={18} />
-                    </button>
-
-                    {/* DELETE ICON BUTTON */}
-                    <button
-                      onClick={() => setDeleteConfirm(inv._id)}
-                      className="p-2 rounded-md bg-red-100 text-red-700 hover:bg-red-200 transition"
-                      title="Delete Invoice"
-                    >
-                      <Trash2 size={18} />
-                    </button>
+              {invoices.length === 0 ? (
+                <tr>
+                  <td
+                    colSpan="5"
+                    className="text-center py-6 text-gray-500 font-medium"
+                  >
+                    No invoices found
                   </td>
                 </tr>
-              ))}
+              ) : (
+                invoices.map((inv) => (
+                  <tr key={inv._id} className="border-t">
+                    <td className="py-3 px-4 font-semibold">
+                      #{inv.invoiceNumber}
+                    </td>
+
+                    <td className="py-3 px-4">{formatDate(inv.createdAt)}</td>
+
+                    <td className="py-3 px-4">{inv.totalAmount} SAR</td>
+
+                    {/* VIEW BUTTON */}
+                    <td className="py-3 px-4">
+                      <button
+                        onClick={() => openInvoice(inv._id)}
+                        className="flex items-center gap-1 bg-primary/10 text-primary px-3 py-1 rounded-md hover:bg-primary/20"
+                      >
+                        <FileText size={16} /> View
+                      </button>
+                    </td>
+
+                    {/* ACTION BUTTONS */}
+                    <td className="py-3 px-4 flex items-center gap-3">
+                      {/* UPDATE ICON BUTTON */}
+                      <button
+                        onClick={() => {
+                          fetchSales();
+                          setEditMode(true);
+                          setInvoiceToEdit(inv._id);
+
+                          setSelectedSales(inv.sales.map((s) => s._id));
+                          setCustomerName(inv.customerName);
+
+                          setCreateModal(true);
+                        }}
+                        className="p-2 rounded-md bg-yellow-100 text-yellow-700 hover:bg-yellow-200 transition"
+                        title="Update Invoice"
+                      >
+                        <Pencil size={18} />
+                      </button>
+
+                      {/* DELETE ICON BUTTON */}
+                      <button
+                        onClick={() => setDeleteConfirm(inv._id)}
+                        className="p-2 rounded-md bg-red-100 text-red-700 hover:bg-red-200 transition"
+                        title="Delete Invoice"
+                      >
+                        <Trash2 size={18} />
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>
