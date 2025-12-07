@@ -20,7 +20,7 @@ const InvoicePage = () => {
       });
 
       if (res.data.success) {
-        setInvoices(res.data.data);
+        setInvoices(res.data.data.reverse());
       }
     } catch (err) {
       console.error("Failed loading invoices", err);
@@ -88,7 +88,7 @@ const InvoicePage = () => {
             <thead className="bg-gray-100 text-gray-600 text-sm">
               <tr>
                 <th className="py-3 px-4">Invoice No</th>
-                <th className="py-3 px-4">Customer</th>
+
                 <th className="py-3 px-4">Date</th>
                 <th className="py-3 px-4">Total</th>
                 <th className="py-3 px-4">Invoice</th>
@@ -101,8 +101,6 @@ const InvoicePage = () => {
                   <td className="py-3 px-4 font-semibold">
                     #{inv.invoiceNumber}
                   </td>
-
-                  <td className="py-3 px-4">{inv.customerName}</td>
 
                   <td className="py-3 px-4">{formatDate(inv.createdAt)}</td>
 
