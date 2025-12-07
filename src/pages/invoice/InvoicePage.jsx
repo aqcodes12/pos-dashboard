@@ -194,8 +194,15 @@ const InvoicePage = () => {
             <div className="border-y border-gray-300 py-3 text-sm px-4 mt-2">
               {selectedInvoice.sales.map((item) => (
                 <div key={item._id} className="mb-2">
+                  {/* Product Name */}
+                  <p className="font-medium">
+                    {item.product?.name || "No product name"}
+                  </p>
+
+                  {/* Weight */}
                   <p className="font-medium">Item {item.weight || 1200}g</p>
-                  <p className="font-medium">Item {item.weight || 1200}g</p>
+
+                  {/* Price Row */}
                   <p className="flex justify-between text-gray-700">
                     <span>
                       {item.quantity} × {item.sellingPrice.toFixed(2)} ر.س
