@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { LayoutDashboard } from "lucide-react";
+import { LayoutDashboard, Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import BrandLogo from "../../assets/daily.png";
 import axios from "axios";
@@ -7,6 +7,7 @@ import axios from "axios";
 const LoginPage = () => {
   const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -16,6 +17,7 @@ const LoginPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+    setLoading(true);
 
     try {
       const res = await axios.post("/user/login", {
@@ -33,6 +35,8 @@ const LoginPage = () => {
       }
     } catch (error) {
       setError(error.response?.data?.message || "Login failed");
+    } finally {
+      setLoading(false); // <-- STOP LOADING
     }
   };
 
@@ -112,17 +116,21 @@ const LoginPage = () => {
             {/* Submit Button */}
             <button
               type="submit"
-              className="w-full bg-primary text-white py-2.5 rounded-lg font-medium hover:bg-primary transition"
+              disabled={loading}
+              className={`w-full bg-primary text-white py-2.5 rounded-lg font-medium 
+  transition flex items-center justify-center gap-2
+  ${loading ? "opacity-80 cursor-not-allowed" : "hover:bg-primary"}`}
             >
-              Sign In
+              {loading ? (
+                <>
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                  Processing...
+                </>
+              ) : (
+                "Sign In"
+              )}
             </button>
           </form>
-          <div
-            onClick={() => navigate("/forget-password")}
-            className="text-right mt-2 text-primary font-medium hover:underline cursor-pointer"
-          >
-            <span>Forget Password?</span>
-          </div>
 
           {/* Footer */}
           <p className="text-center text-sm text-gray-500 mt-5">
