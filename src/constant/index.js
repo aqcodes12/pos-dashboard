@@ -1,3 +1,3 @@
-const BASE_URL = "https://jawaharapoultry.pos.ex-ion.com:5000/api";
+const BASE_URL = import.meta.env.VITE_APP_BASE_URL;
 
 export { BASE_URL };
