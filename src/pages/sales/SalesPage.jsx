@@ -396,7 +396,9 @@ const AddSaleModal = ({
             <option value="">Choose...</option>
             {products.map((p) => (
               <option key={p._id} value={p._id}>
-                {p.name} — {p.sellingPrice} SAR
+                {p.name} —
+                {p.unit === "WEIGHT" ? `${p.weight}g` : `${p.stock} pcs`} —{" "}
+                {p.sellingPrice} SAR
               </option>
             ))}
           </select>
