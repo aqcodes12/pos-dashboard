@@ -195,6 +195,7 @@ const InvoicePage = () => {
               {selectedInvoice.sales.map((item) => (
                 <div key={item._id} className="mb-2">
                   <p className="font-medium">Item {item.weight || 1200}g</p>
+                  <p className="font-medium">Item {item.weight || 1200}g</p>
                   <p className="flex justify-between text-gray-700">
                     <span>
                       {item.quantity} × {item.sellingPrice.toFixed(2)} ر.س
@@ -242,13 +243,15 @@ const InvoicePage = () => {
 
             {/* ================= QR ================= */}
             <div className="flex justify-center mt-3 mb-4">
-              <img
-                src={`https://api.qrserver.com/v1/create-qr-code/?size=170x170&data=${
-                  selectedInvoice.qrCode || selectedInvoice.invoiceNumber
-                }`}
-                className="border p-2 bg-white"
-                alt="QR Code"
-              />
+              <div className="flex justify-center mt-3 mb-4">
+                <img
+                  src={`https://api.qrserver.com/v1/create-qr-code/?size=170x170&data=${encodeURIComponent(
+                    selectedInvoice.qrCode
+                  )}`}
+                  className="border p-2 bg-white"
+                  alt="QR Code"
+                />
+              </div>
             </div>
           </div>
 
