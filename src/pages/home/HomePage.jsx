@@ -8,13 +8,23 @@ import LiveOrders from "./components/LiveOrders";
 import TopSelling from "./components/TopSelling";
 import RecentOrders from "./components/RecentOrders";
 import axios from "axios";
+import DominoLoader from "../../components/DominoLoader";
 
 const HomePage = () => {
+  const [loading, setLoading] = useState(true);
   const [statss, setStats] = useState({
     todaysSales: 0,
     todaysProfit: 0,
     todaysOrders: 0,
   });
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 1500);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   // ============================
   // FETCH TODAY'S SUMMARY
@@ -70,6 +80,14 @@ const HomePage = () => {
       change: "",
     },
   ];
+
+  if (loading) {
+    return (
+      <div className="h-screen flex justify-center items-center">
+        <DominoLoader />
+      </div>
+    );
+  }
 
   return (
     <>
