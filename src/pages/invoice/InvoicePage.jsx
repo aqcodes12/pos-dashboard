@@ -64,6 +64,10 @@ const InvoicePage = () => {
     });
   };
 
+  const subtotal = Number(selectedInvoice?.totalNetAmount || 0);
+  const vat = Number(selectedInvoice?.totalVatAmount || 0);
+  const total = Number(selectedInvoice?.totalAmount || 0);
+
   return (
     <div className="p-6 min-h-screen">
       <h2 className="text-xl font-semibold text-gray-800 mb-4">
@@ -206,22 +210,22 @@ const InvoicePage = () => {
             <div className="text-sm px-4 space-y-1 mt-2">
               <p className="flex justify-between">
                 <span>Subtotal:</span>
-                <span>{selectedInvoice.totalNetAmount?.toFixed(2)} ر.س</span>
+                <span>{subtotal.toFixed(2)} ر.س</span>
               </p>
 
               <p className="flex justify-between">
-                <span>VAT 15%:</span>
-                <span>{selectedInvoice.totalVatAmount?.toFixed(2)} ر.س</span>
+                <span>VAT (15%):</span>
+                <span>{vat.toFixed(2)} ر.س</span>
               </p>
 
               <p className="flex justify-between font-bold text-lg border-t pt-2">
-                <span>TOTAL:</span>
-                <span>{selectedInvoice.totalAmount.toFixed(2)} ر.س</span>
+                <span>Total:</span>
+                <span>{total.toFixed(2)} ر.س</span>
               </p>
 
               <p className="flex justify-between mt-2">
                 <span>Cash:</span>
-                <span>{selectedInvoice.totalAmount.toFixed(2)} ر.س</span>
+                <span>{total.toFixed(2)} ر.س</span>
               </p>
             </div>
 
