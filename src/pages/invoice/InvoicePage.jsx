@@ -7,10 +7,38 @@ const InvoicePage = () => {
   const [invoices, setInvoices] = useState([]);
   const [selectedInvoice, setSelectedInvoice] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [createModal, setCreateModal] = useState(false);
+  const [salesList, setSalesList] = useState([]);
+  const [selectedSales, setSelectedSales] = useState([]);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [customerName, setCustomerName] = useState("");
+  const [creating, setCreating] = useState(false);
+
+  const toggleSaleSelection = (id) => {
+    setSelectedSales((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+    );
+  };
 
   // ======================
   // Fetch All Invoices
   // ======================
+  const fetchSales = async () => {
+    try {
+      const res = await axios.get("/sale/getAll", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      if (res.data.success) {
+        setSalesList(res.data.data);
+      }
+    } catch (err) {
+      console.error("Error loading sales", err);
+    }
+  };
+
   const fetchInvoices = async () => {
     try {
       const res = await axios.get("/invoice/getAll", {
@@ -29,6 +57,45 @@ const InvoicePage = () => {
       console.error("Failed loading invoices", err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const createInvoice = async () => {
+    if (selectedSales.length === 0 || !customerName.trim()) {
+      alert("Please choose at least one sale and enter customer name");
+      return;
+    }
+
+    try {
+      setCreating(true);
+
+      const res = await axios.post(
+        "/invoice/create",
+        {
+          sales: selectedSales, // << MULTIPLE IDs
+          customerName,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+
+      if (res.data.success) {
+        alert("Invoice created!");
+
+        setCreateModal(false);
+        setSelectedSales([]);
+        setCustomerName("");
+
+        await fetchInvoices();
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Failed to create invoice");
+    } finally {
+      setCreating(false);
     }
   };
 
@@ -73,9 +140,18 @@ const InvoicePage = () => {
 
   return (
     <div className="p-6 min-h-screen">
-      <h2 className="text-xl font-semibold text-gray-800 mb-4">
-        Sales History
-      </h2>
+      <div className="flex-wrap md:flex justify-center  md:justify-between items-center mb-4">
+        <h2 className="text-xl font-semibold text-gray-800">Sales History</h2>
+        <button
+          onClick={() => {
+            fetchSales();
+            setCreateModal(true);
+          }}
+          className="bg-primary text-white px-4 py-2 rounded-lg"
+        >
+          + Create Invoice
+        </button>
+      </div>
 
       {/* ===================== LOADING ===================== */}
       {loading && (
@@ -121,6 +197,109 @@ const InvoicePage = () => {
               ))}
             </tbody>
           </table>
+        </div>
+      )}
+      {createModal && (
+        <div className="fixed inset-0 bg-black/40 flex justify-center items-center z-50">
+          <div className="bg-white w-full max-w-md rounded-lg shadow-lg p-6 relative">
+            {/* Close Button */}
+            <button
+              onClick={() => setCreateModal(false)}
+              className="absolute top-3 right-3 text-gray-500 hover:text-gray-700"
+            >
+              <X size={22} />
+            </button>
+
+            <h2 className="text-lg font-semibold text-gray-800 mb-4">
+              Create Invoice
+            </h2>
+
+            {/* Multi-Select Dropdown */}
+            <label className="text-sm font-medium text-gray-700">
+              Select Sales
+            </label>
+
+            <div className="relative mb-4">
+              {/* Dropdown Button */}
+              <button
+                onClick={() => setDropdownOpen(!dropdownOpen)}
+                className="w-full border rounded-lg px-3 py-2 flex justify-between items-center bg-white"
+              >
+                <span className="text-gray-700">
+                  {selectedSales.length === 0
+                    ? "Select sales..."
+                    : `${selectedSales.length} selected`}
+                </span>
+
+                <svg
+                  className={`w-4 h-4 transform transition ${
+                    dropdownOpen ? "rotate-180" : ""
+                  }`}
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19 9l-7 7-7-7"
+                  />
+                </svg>
+              </button>
+
+              {/* Dropdown List */}
+              {dropdownOpen && (
+                <div className="absolute z-50 w-full bg-white border rounded-lg mt-1 max-h-60 overflow-y-auto shadow-lg">
+                  {salesList.map((sale) => {
+                    const checked = selectedSales.includes(sale._id);
+                    return (
+                      <div
+                        key={sale._id}
+                        className="flex items-center justify-between px-3 py-2 hover:bg-gray-50 cursor-pointer"
+                        onClick={() => toggleSaleSelection(sale._id)}
+                      >
+                        <div>
+                          <p className="font-medium">{sale.product?.name}</p>
+                          <p className="text-xs text-gray-500">
+                            {sale.quantity}× {sale.sellingPrice} SAR
+                          </p>
+                        </div>
+
+                        <input
+                          type="checkbox"
+                          checked={checked}
+                          onChange={() => toggleSaleSelection(sale._id)}
+                          className="w-4 h-4 accent-primary"
+                        />
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+
+            {/* Customer Name */}
+            <label className="text-sm font-medium text-gray-700">
+              Customer Name
+            </label>
+            <input
+              type="text"
+              placeholder="Enter customer name"
+              className="w-full border rounded-lg px-3 py-2 mt-1 mb-4"
+              value={customerName}
+              onChange={(e) => setCustomerName(e.target.value)}
+            />
+
+            {/* Create Button */}
+            <button
+              onClick={createInvoice}
+              disabled={creating}
+              className="w-full bg-primary text-white py-2 rounded-lg font-medium hover:bg-primary/80 disabled:bg-gray-300"
+            >
+              {creating ? "Creating..." : "Create Invoice"}
+            </button>
+          </div>
         </div>
       )}
 
