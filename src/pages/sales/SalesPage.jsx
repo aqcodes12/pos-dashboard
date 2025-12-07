@@ -187,19 +187,19 @@ const SalesPage = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <StatCard
             title="Total Sales"
-            value={stats.totalSales}
+            value={stats.totalSales.toFixed(2)}
             icon={<ShoppingCart className="text-primary" size={24} />}
           />
 
           <StatCard
             title="Total Revenue"
-            value={`${stats.totalRevenue} SAR`}
+            value={`${stats.totalRevenue.toFixed(2)} SAR`}
             icon={<DollarSign className="text-green-600" size={24} />}
           />
 
           <StatCard
             title="Total Profit"
-            value={`${stats.totalProfit} SAR`}
+            value={`${stats.totalProfit.toFixed(2)} SAR`}
             icon={<TrendingUp className="text-green-600" size={24} />}
           />
         </div>
