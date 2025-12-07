@@ -9,6 +9,8 @@ import {
   ShoppingCart,
   X,
   Search,
+  Pencil,
+  Trash2,
 } from "lucide-react";
 import { showSuccessToast } from "../../utils/toastConfig";
 import DominoLoader from "../../components/DominoLoader";
@@ -20,6 +22,8 @@ const SalesPage = () => {
   const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState([]);
   const [sales, setSales] = useState([]);
+  const [editSale, setEditSale] = useState(null);
+  const [deleteSaleId, setDeleteSaleId] = useState(null);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -85,6 +89,41 @@ const SalesPage = () => {
       if (res.data.success) setStats(res.data.data);
     } catch (error) {
       console.error("Failed to fetch stats", error);
+    }
+  };
+
+  const handleUpdateSale = async () => {
+    if (!editSale) return;
+
+    try {
+      const res = await axios.patch(`/sale/update/${editSale._id}`, {
+        quantity: editSale.quantity,
+        sellingPrice: editSale.sellingPrice,
+      });
+
+      if (res.data.success) {
+        showSuccessToast("Sale updated successfully");
+        setEditSale(null);
+        getSales();
+        getStats();
+      }
+    } catch (err) {
+      console.error("Update failed", err);
+    }
+  };
+
+  const confirmDeleteSale = async () => {
+    try {
+      const res = await axios.delete(`/sale/delete/${deleteSaleId}`);
+
+      if (res.data.success) {
+        showSuccessToast("Sale deleted");
+        setDeleteSaleId(null);
+        getSales();
+        getStats();
+      }
+    } catch (err) {
+      console.error("Delete failed", err);
     }
   };
 
@@ -164,74 +203,168 @@ const SalesPage = () => {
   }
 
   return (
-    <div className="min-h-screen p-6">
-      <div className="max-w-7xl mx-auto space-y-6">
-        {/* ===================== HEADER ===================== */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-800">
-              Sales Dashboard
-            </h1>
-            <p className="text-gray-500 mt-1">Track and manage your sales</p>
+    <>
+      <div className="min-h-screen p-6">
+        <div className="max-w-7xl mx-auto space-y-6">
+          {/* ===================== HEADER ===================== */}
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-800">
+                Sales Dashboard
+              </h1>
+              <p className="text-gray-500 mt-1">Track and manage your sales</p>
+            </div>
+
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="flex items-center gap-2 bg-primary text-white px-5 py-3 rounded-lg shadow-lg hover:bg-primary transition-all"
+            >
+              <Plus size={20} /> Add New Sale
+            </button>
           </div>
 
-          <button
-            onClick={() => setIsModalOpen(true)}
-            className="flex items-center gap-2 bg-primary text-white px-5 py-3 rounded-lg shadow-lg hover:bg-primary transition-all"
-          >
-            <Plus size={20} /> Add New Sale
-          </button>
+          {/* ===================== STATS ===================== */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <StatCard
+              title="Total Sales"
+              value={stats.totalSales.toFixed(2)}
+              icon={<ShoppingCart className="text-primary" size={24} />}
+            />
+
+            <StatCard
+              title="Total Revenue"
+              value={`${stats.totalRevenue.toFixed(2)} SAR`}
+              icon={<DollarSign className="text-green-600" size={24} />}
+            />
+
+            <StatCard
+              title="Total Profit"
+              value={`${stats.totalProfit.toFixed(2)} SAR`}
+              icon={<TrendingUp className="text-green-600" size={24} />}
+            />
+          </div>
+
+          {/* ===================== FILTERS ===================== */}
+          <Filters
+            filterDate={filterDate}
+            setFilterDate={setFilterDate}
+            searchTerm={searchTerm}
+            setSearchTerm={setSearchTerm}
+          />
+
+          {/* ===================== SALES TABLE ===================== */}
+          <SalesTable
+            sales={filteredSales}
+            setEditSale={setEditSale}
+            setDeleteSaleId={setDeleteSaleId}
+          />
+
+          {/* ===================== ADD SALE MODAL ===================== */}
+          {isModalOpen && (
+            <AddSaleModal
+              products={products}
+              selectedProduct={selectedProduct}
+              setSelectedProduct={setSelectedProduct}
+              quantity={quantity}
+              setQuantity={setQuantity}
+              cost={cost}
+              total={total}
+              profit={profit}
+              onClose={() => setIsModalOpen(false)}
+              handleSaveSale={handleSaveSale}
+            />
+          )}
         </div>
-
-        {/* ===================== STATS ===================== */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <StatCard
-            title="Total Sales"
-            value={stats.totalSales.toFixed(2)}
-            icon={<ShoppingCart className="text-primary" size={24} />}
-          />
-
-          <StatCard
-            title="Total Revenue"
-            value={`${stats.totalRevenue.toFixed(2)} SAR`}
-            icon={<DollarSign className="text-green-600" size={24} />}
-          />
-
-          <StatCard
-            title="Total Profit"
-            value={`${stats.totalProfit.toFixed(2)} SAR`}
-            icon={<TrendingUp className="text-green-600" size={24} />}
-          />
-        </div>
-
-        {/* ===================== FILTERS ===================== */}
-        <Filters
-          filterDate={filterDate}
-          setFilterDate={setFilterDate}
-          searchTerm={searchTerm}
-          setSearchTerm={setSearchTerm}
-        />
-
-        {/* ===================== SALES TABLE ===================== */}
-        <SalesTable sales={filteredSales} />
-
-        {/* ===================== ADD SALE MODAL ===================== */}
-        {isModalOpen && (
-          <AddSaleModal
-            products={products}
-            selectedProduct={selectedProduct}
-            setSelectedProduct={setSelectedProduct}
-            quantity={quantity}
-            setQuantity={setQuantity}
-            cost={cost}
-            total={total}
-            profit={profit}
-            onClose={() => setIsModalOpen(false)}
-            handleSaveSale={handleSaveSale}
-          />
-        )}
       </div>
-    </div>
+
+      {/* ===================== DELETE CONFIRM MODAL ===================== */}
+      {deleteSaleId && (
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex justify-center items-center z-50 p-4">
+          <div className="bg-white w-full max-w-sm rounded-xl shadow-xl p-6">
+            <h2 className="text-lg font-semibold mb-3">Delete Sale?</h2>
+            <p className="text-gray-600 mb-6">This action cannot be undone.</p>
+
+            <div className="flex justify-end gap-3">
+              <button
+                className="px-4 py-2 bg-gray-200 rounded-lg"
+                onClick={() => setDeleteSaleId(null)}
+              >
+                Cancel
+              </button>
+
+              <button
+                className="px-4 py-2 bg-red-600 text-white rounded-lg"
+                onClick={confirmDeleteSale}
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ===================== EDIT SALE MODAL ===================== */}
+      {editSale && (
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex justify-center items-center z-50 p-4">
+          <div className="bg-white w-full max-w-md rounded-xl shadow-xl p-6">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-semibold">Update Sale</h2>
+              <button onClick={() => setEditSale(null)}>
+                <X size={22} />
+              </button>
+            </div>
+
+            {/* Quantity */}
+            <div className="mb-4">
+              <label className="block text-sm font-medium mb-1">Quantity</label>
+              <input
+                type="number"
+                className="w-full px-4 py-2 border rounded-lg"
+                value={editSale.quantity}
+                onChange={(e) =>
+                  setEditSale({ ...editSale, quantity: Number(e.target.value) })
+                }
+              />
+            </div>
+
+            {/* Selling Price */}
+            <div className="mb-4">
+              <label className="block text-sm font-medium mb-1">
+                Selling Price
+              </label>
+              <input
+                type="number"
+                className="w-full px-4 py-2 border rounded-lg"
+                value={editSale.sellingPrice}
+                onChange={(e) =>
+                  setEditSale({
+                    ...editSale,
+                    sellingPrice: Number(e.target.value),
+                  })
+                }
+              />
+            </div>
+
+            {/* Buttons */}
+            <div className="flex justify-end gap-3 mt-4">
+              <button
+                className="px-4 py-2 bg-gray-200 rounded-lg"
+                onClick={() => setEditSale(null)}
+              >
+                Cancel
+              </button>
+
+              <button
+                className="px-4 py-2 bg-primary text-white rounded-lg"
+                onClick={handleUpdateSale}
+              >
+                Update
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 
@@ -294,7 +427,7 @@ const Filters = ({ filterDate, setFilterDate, searchTerm, setSearchTerm }) => (
   </div>
 );
 
-const SalesTable = ({ sales }) => (
+const SalesTable = ({ sales, setEditSale, setDeleteSaleId }) => (
   <div className="bg-white rounded-xl shadow-md border overflow-hidden">
     <table className="w-full text-left">
       <thead className="bg-primary text-white">
@@ -305,6 +438,7 @@ const SalesTable = ({ sales }) => (
           <th className="py-4 px-6">Qty</th>
           <th className="py-4 px-6">Total</th>
           <th className="py-4 px-6">Profit</th>
+          <th className="py-4 px-6">Action</th>
         </tr>
       </thead>
 
@@ -345,6 +479,30 @@ const SalesTable = ({ sales }) => (
 
               <td className="px-6 py-4 text-green-600 font-semibold">
                 {sale.profit} SAR
+              </td>
+              {/* ACTIONS */}
+              <td className="px-6 py-4 flex items-center gap-3">
+                {/* EDIT */}
+                <button
+                  onClick={() =>
+                    setEditSale({
+                      _id: sale._id,
+                      quantity: sale.quantity,
+                      sellingPrice: sale.sellingPrice,
+                    })
+                  }
+                  className="p-2 bg-yellow-100 text-yellow-700 rounded-lg hover:bg-yellow-200"
+                >
+                  <Pencil size={18} />
+                </button>
+
+                {/* DELETE */}
+                <button
+                  onClick={() => setDeleteSaleId(sale._id)}
+                  className="p-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200"
+                >
+                  <Trash2 size={18} />
+                </button>
               </td>
             </tr>
           ))
