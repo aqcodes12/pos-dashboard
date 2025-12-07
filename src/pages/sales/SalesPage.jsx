@@ -305,7 +305,6 @@ const SalesTable = ({ sales }) => (
           <th className="py-4 px-6">Qty</th>
           <th className="py-4 px-6">Total</th>
           <th className="py-4 px-6">Profit</th>
-          <th className="py-4 px-6">Invoice</th>
         </tr>
       </thead>
 
@@ -337,12 +336,6 @@ const SalesTable = ({ sales }) => (
 
               <td className="px-6 py-4 text-green-600 font-semibold">
                 {sale.profit} SAR
-              </td>
-
-              <td className="px-6 py-4">
-                <button className="flex items-center gap-2 px-3 py-2 bg-blue-100 text-primary rounded-lg">
-                  <FileText size={16} /> View
-                </button>
               </td>
             </tr>
           ))
