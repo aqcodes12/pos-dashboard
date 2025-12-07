@@ -70,7 +70,7 @@ const SalesPage = () => {
   const getSales = async () => {
     try {
       const res = await axios.get("/sale/getAll");
-      if (res.data.success) setSales(res.data.data);
+      if (res.data.success) setSales(res.data.data.reverse());
     } catch (error) {
       console.error("Failed to fetch sales", error);
     }
@@ -325,7 +325,7 @@ const SalesTable = ({ sales }) => (
 
               <td className="px-6 py-4">
                 {sale.product.unit === "WEIGHT"
-                  ? `${sale.weight}g`
+                  ? `${sale.product.weight}g`
                   : `${sale.quantity} pcs`}
               </td>
 
