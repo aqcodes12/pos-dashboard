@@ -8,7 +8,7 @@ const ProtectedRoute = () => {
 
   if (!token || !user) {
     showInfoToast("Please login to continue");
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/" replace />;
   }
 
   return <Outlet />;
