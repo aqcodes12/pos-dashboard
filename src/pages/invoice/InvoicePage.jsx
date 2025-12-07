@@ -103,8 +103,8 @@ const InvoicePage = () => {
   };
 
   const updateInvoice = async () => {
-    if (selectedSales.length === 0 || !customerName.trim()) {
-      alert("Please choose at least one sale and enter customer name");
+    if (selectedSales.length === 0) {
+      alert("Please select at least one sale");
       return;
     }
 
@@ -115,7 +115,7 @@ const InvoicePage = () => {
         `/invoice/update/${invoiceToEdit}`,
         {
           sales: selectedSales,
-          customerName,
+          customerName: customerName || "", // optional
         },
         {
           headers: {
@@ -428,11 +428,17 @@ const InvoicePage = () => {
 
             {/* Create Button */}
             <button
-              onClick={createInvoice}
+              onClick={editMode ? updateInvoice : createInvoice}
               disabled={creating}
               className="w-full bg-primary text-white py-2 rounded-lg font-medium hover:bg-primary/80 disabled:bg-gray-300"
             >
-              {creating ? "Creating..." : "Create Invoice"}
+              {creating
+                ? editMode
+                  ? "Updating..."
+                  : "Creating..."
+                : editMode
+                ? "Update Invoice"
+                : "Create Invoice"}
             </button>
           </div>
         </div>
