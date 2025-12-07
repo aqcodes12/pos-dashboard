@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { FileText, Printer, X } from "lucide-react";
+import { FileText, Pencil, Printer, Trash2, X } from "lucide-react";
 import DominoLoader from "../../components/DominoLoader";
 
 const InvoicePage = () => {
@@ -13,6 +13,9 @@ const InvoicePage = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [customerName, setCustomerName] = useState("");
   const [creating, setCreating] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const [invoiceToEdit, setInvoiceToEdit] = useState(null);
+  const [deleteConfirm, setDeleteConfirm] = useState(null);
 
   const toggleSaleSelection = (id) => {
     setSelectedSales((prev) =>
@@ -99,6 +102,64 @@ const InvoicePage = () => {
     }
   };
 
+  const updateInvoice = async () => {
+    if (selectedSales.length === 0 || !customerName.trim()) {
+      alert("Please choose at least one sale and enter customer name");
+      return;
+    }
+
+    try {
+      setCreating(true);
+
+      const res = await axios.patch(
+        `/invoice/update/${invoiceToEdit}`,
+        {
+          sales: selectedSales,
+          customerName,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+
+      if (res.data.success) {
+        alert("Invoice updated!");
+        setCreateModal(false);
+        setEditMode(false);
+        setSelectedSales([]);
+        setCustomerName("");
+
+        await fetchInvoices();
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Failed to update invoice");
+    } finally {
+      setCreating(false);
+    }
+  };
+
+  const deleteInvoice = async (id) => {
+    try {
+      const res = await axios.delete(`/invoice/delete/${id}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      if (res.data.success) {
+        alert("Invoice deleted!");
+        setDeleteConfirm(null);
+        fetchInvoices();
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Delete failed");
+    }
+  };
+
   // ======================
   // Fetch Invoice By ID
   // ======================
@@ -171,6 +232,7 @@ const InvoicePage = () => {
                 <th className="py-3 px-4">Date</th>
                 <th className="py-3 px-4">Total</th>
                 <th className="py-3 px-4">Invoice</th>
+                <th className="py-3 px-4">Actions</th>
               </tr>
             </thead>
 
@@ -185,12 +247,43 @@ const InvoicePage = () => {
 
                   <td className="py-3 px-4">{inv.totalAmount} SAR</td>
 
+                  {/* VIEW BUTTON */}
                   <td className="py-3 px-4">
                     <button
                       onClick={() => openInvoice(inv._id)}
                       className="flex items-center gap-1 bg-primary/10 text-primary px-3 py-1 rounded-md hover:bg-primary/20"
                     >
                       <FileText size={16} /> View
+                    </button>
+                  </td>
+
+                  {/* ACTION BUTTONS */}
+                  <td className="py-3 px-4 flex items-center gap-3">
+                    {/* UPDATE ICON BUTTON */}
+                    <button
+                      onClick={() => {
+                        fetchSales();
+                        setEditMode(true);
+                        setInvoiceToEdit(inv._id);
+
+                        setSelectedSales(inv.sales.map((s) => s._id));
+                        setCustomerName(inv.customerName);
+
+                        setCreateModal(true);
+                      }}
+                      className="p-2 rounded-md bg-yellow-100 text-yellow-700 hover:bg-yellow-200 transition"
+                      title="Update Invoice"
+                    >
+                      <Pencil size={18} />
+                    </button>
+
+                    {/* DELETE ICON BUTTON */}
+                    <button
+                      onClick={() => setDeleteConfirm(inv._id)}
+                      className="p-2 rounded-md bg-red-100 text-red-700 hover:bg-red-200 transition"
+                      title="Delete Invoice"
+                    >
+                      <Trash2 size={18} />
                     </button>
                   </td>
                 </tr>
