@@ -21,6 +21,8 @@ const Products = () => {
   const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editProduct, setEditProduct] = useState(null);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -101,6 +103,28 @@ const Products = () => {
       }
     } catch (error) {
       console.error("Product create failed:", error);
+    }
+  };
+
+  const handleUpdateProduct = async () => {
+    try {
+      const payload = {
+        sellingPrice: Number(editProduct.sellingPrice),
+        stock: Number(editProduct.stock),
+      };
+
+      const res = await axios.put(
+        `/product/update/${editProduct._id}`,
+        payload
+      );
+
+      if (res.data.success) {
+        showSuccessToast("Product updated!");
+        setIsEditModalOpen(false);
+        getProducts();
+      }
+    } catch (error) {
+      console.error("Update failed:", error);
     }
   };
 
@@ -196,7 +220,13 @@ const Products = () => {
 
                   <td className="py-3 px-4">
                     <div className="flex justify-end gap-2">
-                      <button className="text-primary hover:bg-blue-50 p-2 rounded">
+                      <button
+                        onClick={() => {
+                          setEditProduct(product);
+                          setIsEditModalOpen(true);
+                        }}
+                        className="text-primary hover:bg-blue-50 p-2 rounded"
+                      >
                         <Pencil className="w-4 h-4" />
                       </button>
 
@@ -305,6 +335,73 @@ const Products = () => {
                   onClick={handleSubmit}
                 >
                   Save Product
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ----------------------- EDIT PRODUCT MODAL ---------------------- */}
+      {isEditModalOpen && (
+        <div className="fixed inset-0 bg-black/40 flex justify-center items-center z-50">
+          <div className="bg-white w-full max-w-md p-6 rounded-lg shadow-xl">
+            <h3 className="text-xl font-bold mb-4">Update Product</h3>
+
+            <div className="space-y-4">
+              <div>
+                <label className="block mb-1">Product Name</label>
+                <input
+                  type="text"
+                  value={editProduct?.name}
+                  disabled
+                  className="w-full px-3 py-2 border rounded-md bg-gray-100"
+                />
+              </div>
+
+              <div>
+                <label className="block mb-1">Selling Price</label>
+                <input
+                  type="number"
+                  value={editProduct?.sellingPrice}
+                  onChange={(e) =>
+                    setEditProduct({
+                      ...editProduct,
+                      sellingPrice: e.target.value,
+                    })
+                  }
+                  className="w-full px-3 py-2 border rounded-md"
+                />
+              </div>
+
+              <div>
+                <label className="block mb-1">Stock</label>
+                <input
+                  type="number"
+                  value={editProduct?.stock}
+                  onChange={(e) =>
+                    setEditProduct({
+                      ...editProduct,
+                      stock: e.target.value,
+                    })
+                  }
+                  className="w-full px-3 py-2 border rounded-md"
+                />
+              </div>
+
+              <div className="flex justify-end gap-3 mt-6">
+                <button
+                  className="px-4 py-2 border rounded-md"
+                  onClick={() => setIsEditModalOpen(false)}
+                >
+                  Cancel
+                </button>
+
+                <button
+                  className="px-4 py-2 bg-primary text-white rounded-md"
+                  onClick={handleUpdateProduct}
+                >
+                  Update
                 </button>
               </div>
             </div>
