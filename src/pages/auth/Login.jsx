@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { LayoutDashboard } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import BrandLogo from "../../assets/daily.png";
+import axios from "axios";
 
 const LoginPage = () => {
   const [form, setForm] = useState({ email: "", password: "" });
@@ -12,14 +13,26 @@ const LoginPage = () => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Dummy credentials
-    if (form.email === "admin@gmail.com" && form.password === "abc123") {
-      setError("");
-      navigate("/"); // redirect to home
-    } else {
-      setError("Invalid email or password. Please try again.");
+    setError("");
+
+    try {
+      const res = await axios.post("/user/login", {
+        identifier: form.email,
+        password: form.password,
+      });
+
+      if (res.data.success) {
+        const user = res.data.data;
+
+        localStorage.setItem("token", user.token);
+        localStorage.setItem("user", JSON.stringify(user));
+
+        navigate("/dashboard");
+      }
+    } catch (error) {
+      setError(error.response?.data?.message || "Login failed");
     }
   };
 
@@ -49,19 +62,6 @@ const LoginPage = () => {
           <h2 className="text-xl font-semibold text-center text-gray-800 mb-6">
             Sign in to your account
           </h2>
-          {/* <p className="text-center text-gray-500 text-sm mb-6">
-            Use the demo credentials below
-          </p> */}
-
-          {/* Dummy credentials note */}
-          {/* <div className="text-xs bg-gray-50 text-gray-600 p-2 rounded-lg mb-4 text-center border border-gray-100">
-            <p>
-              <strong>Email:</strong> admin@gmail.com
-            </p>
-            <p>
-              <strong>Password:</strong> abc123
-            </p>
-          </div> */}
 
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* Email */}
@@ -117,13 +117,22 @@ const LoginPage = () => {
               Sign In
             </button>
           </form>
+          <div
+            onClick={() => navigate("/forget-password")}
+            className="text-right mt-2 text-primary font-medium hover:underline cursor-pointer"
+          >
+            <span>Forget Password?</span>
+          </div>
 
           {/* Footer */}
           <p className="text-center text-sm text-gray-500 mt-5">
             Don’t have an account?{" "}
-            <a href="#" className="text-primary font-medium hover:underline">
+            <span
+              onClick={() => navigate("/signup")}
+              className="text-primary font-medium hover:underline cursor-pointer"
+            >
               Sign up
-            </a>
+            </span>
           </p>
         </div>
       </div>

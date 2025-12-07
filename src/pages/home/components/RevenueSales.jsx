@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import {
   LineChart,
   Line,
@@ -11,40 +12,45 @@ import {
 } from "recharts";
 import { Calendar } from "lucide-react";
 
-const data = [
-  { month: "Jan", revenue: 120, sale: 140 },
-  { month: "Feb", revenue: 150, sale: 160 },
-  { month: "Mar", revenue: 180, sale: 200 },
-  { month: "Apr", revenue: 300, sale: 190 },
-  { month: "May", revenue: 270, sale: 210 },
-  { month: "Jun", revenue: 330, sale: 190 },
-  { month: "Jul", revenue: 290, sale: 160 },
-  { month: "Aug", revenue: 260, sale: 150 },
-  { month: "Sep", revenue: 310, sale: 170 },
-  { month: "Oct", revenue: 240, sale: 140 },
-  { month: "Nov", revenue: 330, sale: 180 },
-  { month: "Dec", revenue: 300, sale: 200 },
+// Convert 1–12 → Jan–Dec
+const MONTH_NAMES = [
+  "",
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
 ];
 
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
-    const item = payload[0];
-    const isRevenue = item.dataKey === "revenue";
+    const revenue = payload.find((p) => p.dataKey === "revenue");
+    const sale = payload.find((p) => p.dataKey === "sale");
+
     return (
       <div className="bg-gray-900 text-white px-3 py-2 rounded-lg text-sm shadow-md">
         <p className="font-medium">{`${label}, 2025`}</p>
-        <p
-          className={`flex items-center gap-2 ${
-            isRevenue ? "text-primary" : "text-yellow-400"
-          }`}
-        >
-          <span
-            className={`w-2.5 h-2.5 rounded-full ${
-              isRevenue ? "bg-primary" : "bg-yellow-400"
-            }`}
-          ></span>
-          ${item.value.toFixed(3)} {isRevenue ? "Revenue" : "Sale"}
-        </p>
+
+        {revenue && (
+          <p className="flex items-center gap-2 text-white">
+            <span className="w-2.5 h-2.5 rounded-full bg-primary"></span>
+            {revenue.value.toFixed(2)} Revenue
+          </p>
+        )}
+
+        {sale && (
+          <p className="flex items-center gap-2 text-yellow-400">
+            <span className="w-2.5 h-2.5 rounded-full bg-yellow-400"></span>
+            {sale.value.toFixed(2)} Sales
+          </p>
+        )}
       </div>
     );
   }
@@ -52,6 +58,36 @@ const CustomTooltip = ({ active, payload, label }) => {
 };
 
 const RevenueSales = () => {
+  const [chartData, setChartData] = useState([]);
+
+  // ==============================
+  // LOAD MONTHLY REVENUE & SALES
+  // ==============================
+  const getChartData = async () => {
+    try {
+      const res = await axios.get("/sale/monthly-revenue-sales");
+
+      if (res.data.success) {
+        const apiData = res.data.data;
+
+        // Convert backend structure to chart structure
+        const formatted = apiData.map((item) => ({
+          month: MONTH_NAMES[item.month],
+          revenue: item.totalRevenue,
+          sale: item.totalSales,
+        }));
+
+        setChartData(formatted);
+      }
+    } catch (error) {
+      console.error("Failed to load chart", error);
+    }
+  };
+
+  useEffect(() => {
+    getChartData();
+  }, []);
+
   return (
     <div className="p-6 bg-white border border-gray-100 rounded-2xl shadow-sm w-full">
       {/* Header */}
@@ -69,7 +105,7 @@ const RevenueSales = () => {
       <div className="w-full h-72">
         <ResponsiveContainer>
           <LineChart
-            data={data}
+            data={chartData}
             margin={{ top: 10, right: 20, left: -10, bottom: 0 }}
           >
             <CartesianGrid
@@ -77,21 +113,22 @@ const RevenueSales = () => {
               stroke="#E5E7EB"
               vertical={false}
             />
+
             <XAxis
               dataKey="month"
               tickLine={false}
               axisLine={false}
               tick={{ fill: "#6B7280", fontSize: 12 }}
             />
+
             <YAxis
               axisLine={false}
               tickLine={false}
               tick={{ fill: "#6B7280", fontSize: 12 }}
             />
-            <Tooltip
-              content={<CustomTooltip />}
-              cursor={{ stroke: "#A7F3D0", strokeWidth: 1 }}
-            />
+
+            <Tooltip content={<CustomTooltip />} />
+
             <Legend
               verticalAlign="top"
               align="right"
@@ -99,6 +136,8 @@ const RevenueSales = () => {
               iconSize={10}
               wrapperStyle={{ top: -20, right: 0, fontSize: "12px" }}
             />
+
+            {/* Revenue Line */}
             <Line
               type="monotone"
               dataKey="revenue"
@@ -107,6 +146,8 @@ const RevenueSales = () => {
               dot={false}
               activeDot={{ r: 6 }}
             />
+
+            {/* Sales Line */}
             <Line
               type="monotone"
               dataKey="sale"

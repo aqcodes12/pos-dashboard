@@ -21,7 +21,7 @@ const Sidebar = () => {
   const location = useLocation();
 
   const routes = {
-    Dashboard: "/",
+    Dashboard: "/dashboard",
     Products: "/products",
     Sales: "/sales",
     Invoice: "/invoice",
@@ -44,6 +44,8 @@ const Sidebar = () => {
   const activeItem =
     mainMenuItems.find((item) => routes[item.name] === location.pathname)
       ?.name || "Dashboard";
+
+  const user = JSON.parse(localStorage.getItem("user"));
 
   return (
     <div className="relative">
@@ -145,7 +147,7 @@ const Sidebar = () => {
                     <User className="w-5 h-5 text-gray-600" />
                   </div>
                   <span className="text-sm font-medium text-gray-700">
-                    Zain Baig
+                    {user?.name || "User"}
                   </span>
                 </div>
               </div>

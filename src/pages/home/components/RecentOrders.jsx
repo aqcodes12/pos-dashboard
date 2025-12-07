@@ -1,48 +1,191 @@
-import React from "react";
+// import React from "react";
+// import { MoreHorizontal } from "lucide-react";
+
+// const RecentOrders = () => {
+//   const orders = [
+//     {
+//       id: 1,
+//       productName: "Fresh Chicken Breast",
+//       type: "1.5 KG",
+//       orderId: "#CHK10293",
+//       date: "08 Dec, 10:30",
+//       customer: "Abdul Rahman",
+//       customerType: "Regular Customer",
+//       price: 28.5,
+//       payment: "Cash on Delivery",
+//       status: "Waiting...",
+//       statusColor: "text-gray-500",
+//     },
+//     {
+//       id: 2,
+//       productName: "Mutton Boneless",
+//       type: "1 KG",
+//       orderId: "#MUT55831",
+//       date: "08 Dec, 10:05",
+//       customer: "Sajid Khan",
+//       customerType: "Premium Customer",
+//       price: 52.0,
+//       payment: "Paid by Apple Pay",
+//       status: "Packaged",
+//       statusColor: "text-amber-500",
+//     },
+//     {
+//       id: 3,
+//       productName: "Chicken Wings",
+//       type: "2 KG",
+//       orderId: "#CHK88320",
+//       date: "08 Dec, 09:40",
+//       customer: "Yusuf Ali",
+//       customerType: "New Customer",
+//       price: 34.0,
+//       payment: "Paid by Card",
+//       status: "Delivered",
+//       statusColor: "text-green-600",
+//     },
+//   ];
+
+//   return (
+//     <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm w-full overflow-hidden">
+//       {/* Header */}
+//       <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
+//         <h2 className="text-lg font-semibold text-gray-800">Recent Orders</h2>
+//         <button className="text-primary text-sm font-medium hover:underline">
+//           View All
+//         </button>
+//       </div>
+
+//       {/* Table Wrapper for Responsiveness */}
+//       <div className="overflow-x-auto">
+//         <table className="min-w-full text-left border-separate border-spacing-y-2">
+//           <thead>
+//             <tr className="text-gray-600 text-sm">
+//               <th className="py-2 px-3">Product Name</th>
+//               <th className="py-2 px-3">Invoice No</th>
+//               <th className="py-2 px-3">Price</th>
+//               <th className="py-2 px-3">Status</th>
+//               <th className="py-2 px-3 text-right">Action</th>
+//             </tr>
+//           </thead>
+
+//           <tbody className="text-sm">
+//             {orders.map((order) => (
+//               <tr
+//                 key={order.id}
+//                 className="bg-white border border-gray-100 rounded-xl shadow-sm hover:bg-gray-50 transition"
+//               >
+//                 {/* Product */}
+//                 <td className="py-3 px-3">
+//                   <div>
+//                     <p className="font-medium text-gray-800">
+//                       {order.productName}
+//                     </p>
+//                     <p className="text-gray-500 text-xs">{order.type}</p>
+//                   </div>
+//                 </td>
+
+//                 {/* Order ID */}
+//                 <td className="py-3 px-3">
+//                   <p className="font-medium text-gray-800">{order.orderId}</p>
+//                   <p className="text-gray-500 text-xs">{order.date}</p>
+//                 </td>
+
+//                 {/* Price */}
+//                 <td className="py-3 px-3">
+//                   <p className="font-medium text-gray-800">
+//                     {order.price.toFixed(2)}{" "}
+//                     <span className="text-xs">SAR</span>
+//                   </p>
+//                   <p className="text-gray-500 text-xs">{order.payment}</p>
+//                 </td>
+
+//                 {/* Status */}
+//                 <td className="py-3 px-3">
+//                   <span
+//                     className={`flex items-center gap-2 font-medium ${order.statusColor}`}
+//                   >
+//                     {order.statusColor === "text-amber-500" && (
+//                       <span className="w-2 h-2 bg-amber-400 rounded-full"></span>
+//                     )}
+//                     {order.status}
+//                   </span>
+//                 </td>
+
+//                 {/* Action */}
+//                 <td className="py-3 px-3 text-right">
+//                   <button className="p-2 hover:bg-gray-100 rounded-lg">
+//                     <MoreHorizontal className="w-4 h-4 text-gray-500" />
+//                   </button>
+//                 </td>
+//               </tr>
+//             ))}
+//           </tbody>
+//         </table>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default RecentOrders;
+
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import { MoreHorizontal } from "lucide-react";
 
 const RecentOrders = () => {
-  const orders = [
-    {
-      id: 1,
-      productName: "Fresh Chicken Breast",
-      type: "1.5 KG",
-      orderId: "#CHK10293",
-      date: "08 Dec, 10:30",
-      customer: "Abdul Rahman",
-      customerType: "Regular Customer",
-      price: 28.5,
-      payment: "Cash on Delivery",
-      status: "Waiting...",
-      statusColor: "text-gray-500",
-    },
-    {
-      id: 2,
-      productName: "Mutton Boneless",
-      type: "1 KG",
-      orderId: "#MUT55831",
-      date: "08 Dec, 10:05",
-      customer: "Sajid Khan",
-      customerType: "Premium Customer",
-      price: 52.0,
-      payment: "Paid by Apple Pay",
-      status: "Packaged",
-      statusColor: "text-amber-500",
-    },
-    {
-      id: 3,
-      productName: "Chicken Wings",
-      type: "2 KG",
-      orderId: "#CHK88320",
-      date: "08 Dec, 09:40",
-      customer: "Yusuf Ali",
-      customerType: "New Customer",
-      price: 34.0,
-      payment: "Paid by Card",
-      status: "Delivered",
-      statusColor: "text-green-600",
-    },
-  ];
+  const [orders, setOrders] = useState([]);
+
+  // Format ISO date → "07 Dec, 11:12"
+  const formatDate = (iso) => {
+    const d = new Date(iso);
+    const day = String(d.getDate()).padStart(2, "0");
+    const month = d.toLocaleString("en", { month: "short" });
+    const time = d.toLocaleTimeString("en", {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+    return `${day} ${month}, ${time}`;
+  };
+
+  // Fetch API data
+  const fetchRecentOrders = async () => {
+    try {
+      const res = await axios.get("/sale/recent-orders");
+
+      if (res.data.success) {
+        const latestOrders = res.data.data.slice(0, 3); // 🔥 Only take 3
+
+        const formatted = latestOrders.map((order) => ({
+          id: order._id,
+          productName: order.product?.name || "Unknown",
+          type: order.weight ? `${order.weight}g` : "Piece",
+          orderId: "#" + order._id.slice(-6).toUpperCase(),
+          date: formatDate(order.createdAt),
+          price: order.totalWithVat ?? 0,
+          profit: order.profit ?? 0,
+          status:
+            order.status === "CANCELLED"
+              ? "Cancelled"
+              : order.quantity > 0
+              ? "Completed"
+              : "Active",
+          statusColor:
+            order.status === "CANCELLED"
+              ? "text-red-500"
+              : order.quantity > 0
+              ? "text-green-600"
+              : "text-amber-500",
+        }));
+
+        setOrders(formatted);
+      }
+    } catch (err) {
+      console.error("Failed to load recent orders", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchRecentOrders();
+  }, []);
 
   return (
     <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm w-full overflow-hidden">
@@ -54,7 +197,7 @@ const RecentOrders = () => {
         </button>
       </div>
 
-      {/* Table Wrapper for Responsiveness */}
+      {/* Table */}
       <div className="overflow-x-auto">
         <table className="min-w-full text-left border-separate border-spacing-y-2">
           <thead>
@@ -68,56 +211,67 @@ const RecentOrders = () => {
           </thead>
 
           <tbody className="text-sm">
-            {orders.map((order) => (
-              <tr
-                key={order.id}
-                className="bg-white border border-gray-100 rounded-xl shadow-sm hover:bg-gray-50 transition"
-              >
-                {/* Product */}
-                <td className="py-3 px-3">
-                  <div>
-                    <p className="font-medium text-gray-800">
-                      {order.productName}
-                    </p>
-                    <p className="text-gray-500 text-xs">{order.type}</p>
-                  </div>
-                </td>
-
-                {/* Order ID */}
-                <td className="py-3 px-3">
-                  <p className="font-medium text-gray-800">{order.orderId}</p>
-                  <p className="text-gray-500 text-xs">{order.date}</p>
-                </td>
-
-                {/* Price */}
-                <td className="py-3 px-3">
-                  <p className="font-medium text-gray-800">
-                    {order.price.toFixed(2)}{" "}
-                    <span className="text-xs">SAR</span>
-                  </p>
-                  <p className="text-gray-500 text-xs">{order.payment}</p>
-                </td>
-
-                {/* Status */}
-                <td className="py-3 px-3">
-                  <span
-                    className={`flex items-center gap-2 font-medium ${order.statusColor}`}
-                  >
-                    {order.statusColor === "text-amber-500" && (
-                      <span className="w-2 h-2 bg-amber-400 rounded-full"></span>
-                    )}
-                    {order.status}
-                  </span>
-                </td>
-
-                {/* Action */}
-                <td className="py-3 px-3 text-right">
-                  <button className="p-2 hover:bg-gray-100 rounded-lg">
-                    <MoreHorizontal className="w-4 h-4 text-gray-500" />
-                  </button>
+            {orders.length === 0 ? (
+              <tr>
+                <td
+                  colSpan="5"
+                  className="text-center py-6 text-gray-400 text-sm"
+                >
+                  No recent orders
                 </td>
               </tr>
-            ))}
+            ) : (
+              orders.map((order) => (
+                <tr
+                  key={order.id}
+                  className="bg-white border border-gray-100 rounded-xl shadow-sm hover:bg-gray-50 transition"
+                >
+                  {/* Product */}
+                  <td className="py-3 px-3">
+                    <div>
+                      <p className="font-medium text-gray-800">
+                        {order.productName}
+                      </p>
+                      <p className="text-gray-500 text-xs">{order.type}</p>
+                    </div>
+                  </td>
+
+                  {/* Invoice */}
+                  <td className="py-3 px-3">
+                    <p className="font-medium text-gray-800">{order.orderId}</p>
+                    <p className="text-gray-500 text-xs">{order.date}</p>
+                  </td>
+
+                  {/* Price */}
+                  <td className="py-3 px-3">
+                    <p className="font-medium text-gray-800">
+                      {order.price.toFixed(2)}{" "}
+                      <span className="text-xs">SAR</span>
+                    </p>
+                    <p className="text-gray-500 text-xs">
+                      Profit: {order.profit.toFixed(2)}
+                    </p>
+                  </td>
+
+                  {/* Status */}
+                  <td className="py-3 px-3">
+                    <span
+                      className={`flex items-center gap-2 font-medium ${order.statusColor}`}
+                    >
+                      <span className="w-2 h-2 rounded-full bg-current"></span>
+                      {order.status}
+                    </span>
+                  </td>
+
+                  {/* Action */}
+                  <td className="py-3 px-3 text-right">
+                    <button className="p-2 hover:bg-gray-100 rounded-lg">
+                      <MoreHorizontal className="w-4 h-4 text-gray-500" />
+                    </button>
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>

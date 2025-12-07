@@ -1,7 +1,9 @@
 import React from "react";
 import { NotebookPen, Plus } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const NewM = () => {
+  const navigate = useNavigate();
   return (
     <div className="flex justify-between items-center gap-5 border py-2 px-4 border-gray-200 rounded-2xl w-full">
       {/* Header */}
@@ -13,7 +15,10 @@ const NewM = () => {
       </div>
 
       {/* Action Button */}
-      <button className="flex items-center justify-center gap-2 px-4 py-2 bg-primary text-white text-sm font-medium rounded-xl hover:bg-primary active:scale-95 transition-all duration-150">
+      <button
+        onClick={() => navigate("/sales")}
+        className="cursor-pointer flex items-center justify-center gap-2 px-4 py-2 bg-primary text-white text-sm font-medium rounded-xl hover:bg-primary active:scale-95 transition-all duration-150"
+      >
         <Plus size={18} />
         Add
       </button>

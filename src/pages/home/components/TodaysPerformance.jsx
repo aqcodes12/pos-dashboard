@@ -1,13 +1,58 @@
-import React from "react";
-import { ArrowUpRight, ArrowDownRight } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 
 const TodaysPerformance = () => {
-  // tweak these to change arc fill (0–100 over the half circle)
-  const revenuePct = 85; // green arc percent of the half circle
-  const salesPct = 60; // yellow arc percent of the half circle
+  const [todayRevenue, setTodayRevenue] = useState(0);
+  const [todaySales, setTodaySales] = useState(0);
+
+  const [yesterdayRevenue, setYesterdayRevenue] = useState(0);
+  const [yesterdaySales, setYesterdaySales] = useState(0);
+
+  // Gauge fill percentages (calculated, not shown on UI)
+  const [revenuePct, setRevenuePct] = useState(0);
+  const [salesPct, setSalesPct] = useState(0);
+
+  // ============================
+  // FETCH DAILY REVENUE DATA
+  // ============================
+  const fetchDailyStats = async () => {
+    try {
+      const res = await axios.get("/sale/daily-revenue");
+
+      if (res.data.success) {
+        const t = res.data.data.today;
+        const y = res.data.data.yesterday;
+
+        // Store raw values
+        setTodayRevenue(t.totalRevenue ?? 0);
+        setTodaySales(t.totalSales ?? 0);
+
+        setYesterdayRevenue(y.totalRevenue ?? 0);
+        setYesterdaySales(y.totalSales ?? 0);
+
+        // Calculate gauge percentages internally
+        const revPct = y.totalRevenue
+          ? Math.min((t.totalRevenue / y.totalRevenue) * 100, 100)
+          : 0;
+
+        const salPct = y.totalSales
+          ? Math.min((t.totalSales / y.totalSales) * 100, 100)
+          : 0;
+
+        setRevenuePct(revPct);
+        setSalesPct(salPct);
+      }
+    } catch (error) {
+      console.error("Failed to load daily revenue", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchDailyStats();
+  }, []);
 
   return (
-    <div className="p-5 bg-white rounded-2xl  border border-gray-100 w-full max-w-sm">
+    <div className="p-5 bg-white rounded-2xl border border-gray-100 w-full max-w-sm">
       {/* Header */}
       <div className="flex items-center justify-between mb-3">
         <h2 className="text-lg font-semibold text-gray-800">
@@ -16,15 +61,14 @@ const TodaysPerformance = () => {
         <button className="text-sm text-primary font-medium">Detail</button>
       </div>
 
-      {/* Semi-circle gauge */}
+      {/* Semi-circle Gauge */}
       <div className="relative flex justify-center">
         <svg
           viewBox="0 0 200 120"
           className="w-full max-w-[280px] overflow-visible"
           xmlns="http://www.w3.org/2000/svg"
         >
-          {/* ----- OUTER RING (track + progress) ----- */}
-          {/* Track */}
+          {/* Outer Track */}
           <path
             d="M20 100 A80 80 0 0 1 180 100"
             pathLength="100"
@@ -33,7 +77,8 @@ const TodaysPerformance = () => {
             strokeWidth="14"
             strokeLinecap="round"
           />
-          {/* Progress */}
+
+          {/* Outer Progress (Revenue) */}
           <path
             d="M20 100 A80 80 0 0 1 180 100"
             pathLength="100"
@@ -44,8 +89,7 @@ const TodaysPerformance = () => {
             strokeDasharray={`${revenuePct} 100`}
           />
 
-          {/* ----- INNER RING (track + progress) ----- */}
-          {/* Track */}
+          {/* Inner Track */}
           <path
             d="M35 100 A65 65 0 0 1 165 100"
             pathLength="100"
@@ -54,7 +98,8 @@ const TodaysPerformance = () => {
             strokeWidth="10"
             strokeLinecap="round"
           />
-          {/* Progress */}
+
+          {/* Inner Progress (Sales) */}
           <path
             d="M35 100 A65 65 0 0 1 165 100"
             pathLength="100"
@@ -65,20 +110,21 @@ const TodaysPerformance = () => {
             strokeDasharray={`${salesPct} 100`}
           />
 
-          {/* Center text (aligned to gauge center) */}
+          {/* Center Text */}
           <text
             x="100"
             y="72"
             textAnchor="middle"
             className="fill-gray-800"
-            fontSize="15"
+            fontSize="16"
             fontWeight="600"
           >
-            SAR 360
+            SAR {todayRevenue.toFixed(2)}
           </text>
+
           <text
             x="100"
-            y="90"
+            y="92"
             textAnchor="middle"
             className="fill-gray-500"
             fontSize="12"
@@ -88,34 +134,39 @@ const TodaysPerformance = () => {
         </svg>
       </div>
 
-      {/* Legend / stats */}
-      <div className="mt-5 space-y-2 text-sm">
+      {/* Bottom Stats (RAW API VALUES) */}
+      <div className="mt-5 space-y-3 text-sm">
+        {/* Revenue */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="w-2.5 h-2.5 rounded-full bg-primary" />
             <span className="text-gray-700 font-medium">Revenue</span>
           </div>
-          <span className="flex items-center gap-1 text-primary font-medium">
-            <ArrowUpRight size={14} /> 22.9%
+          <span className="text-gray-800 font-semibold">
+            SAR {todayRevenue.toFixed(2)}
           </span>
         </div>
 
+        {/* Sales */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="w-2.5 h-2.5 rounded-full bg-yellow-400" />
-            <span className="text-gray-700 font-medium">Sale</span>
+            <span className="text-gray-700 font-medium">Sales</span>
           </div>
-          <span className="flex items-center gap-1 text-red-500 font-medium">
-            <ArrowDownRight size={14} /> 20%
+          <span className="text-gray-800 font-semibold">
+            SAR {todaySales.toFixed(2)}
           </span>
         </div>
 
+        {/* Yesterday */}
         <div className="mt-2 pt-2 border-t border-gray-100 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="w-2.5 h-2.5 rounded-full bg-blue-500" />
             <span className="text-gray-700 font-medium">Yesterday</span>
           </div>
-          <span className="text-gray-800 font-semibold">SAR 560.8</span>
+          <span className="text-gray-800 font-semibold">
+            SAR {yesterdayRevenue.toFixed(2)}
+          </span>
         </div>
       </div>
     </div>
