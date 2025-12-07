@@ -7,6 +7,7 @@ import chicken from "../../assets/chicken.png";
 import beef from "../../assets/beef.png";
 import meat from "../../assets/meat.png";
 import mutton from "../../assets/motton.png";
+import DominoLoader from "../../components/DominoLoader";
 
 const imageMapper = (name) => {
   name = name.toLowerCase();
@@ -17,8 +18,17 @@ const imageMapper = (name) => {
 };
 
 const Products = () => {
+  const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 1500);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -110,6 +120,14 @@ const Products = () => {
     }
   };
 
+  if (loading) {
+    return (
+      <div className="h-screen flex justify-center items-center">
+        <DominoLoader />
+      </div>
+    );
+  }
+
   // ---------------------------------------------
   // UI
   // ---------------------------------------------
@@ -168,10 +186,10 @@ const Products = () => {
                     {product.unit === "WEIGHT" ? `${product.weight}g` : "-"}
                   </td>
 
-                  <td className="py-3 px-4">₹{product.purchasePrice}</td>
+                  <td className="py-3 px-4">SAR {product.purchasePrice}</td>
 
                   <td className="py-3 px-4 font-semibold">
-                    ₹{product.sellingPrice}
+                    SAR {product.sellingPrice}
                   </td>
 
                   <td className="py-3 px-4">{product.stock || "-"}</td>

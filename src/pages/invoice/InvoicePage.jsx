@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { FileText, Printer, X } from "lucide-react";
+import DominoLoader from "../../components/DominoLoader";
 
 const InvoicePage = () => {
   const [invoices, setInvoices] = useState([]);
@@ -70,7 +71,11 @@ const InvoicePage = () => {
       </h2>
 
       {/* ===================== LOADING ===================== */}
-      {loading && <p className="text-gray-500 text-sm">Loading invoices...</p>}
+      {loading && (
+        <div className="h-screen flex justify-center items-center">
+          <DominoLoader />
+        </div>
+      )}
 
       {/* ===================== SALES TABLE ===================== */}
       {!loading && (

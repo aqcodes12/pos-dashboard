@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Settings, Save, Store, Hash, MapPin, Phone } from "lucide-react";
+import DominoLoader from "../../components/DominoLoader";
 
 const SettingsPage = () => {
   const [formData, setFormData] = useState({
@@ -88,7 +89,9 @@ const SettingsPage = () => {
 
         {/* LOADING */}
         {loading ? (
-          <p className="text-gray-500 text-sm">Loading settings...</p>
+          <div className="h-screen flex justify-center items-center">
+            <DominoLoader />
+          </div>
         ) : (
           <div className="bg-white rounded-lg shadow-md border border-gray-200 p-6">
             <div className="space-y-5">

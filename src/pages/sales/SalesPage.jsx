@@ -11,13 +11,23 @@ import {
   Search,
 } from "lucide-react";
 import { showSuccessToast } from "../../utils/toastConfig";
+import DominoLoader from "../../components/DominoLoader";
 
 const SalesPage = () => {
   // ============================
   // BACKEND STATES
   // ============================
+  const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState([]);
   const [sales, setSales] = useState([]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 1500);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   const [stats, setStats] = useState({
     totalSales: 0,
@@ -138,12 +148,20 @@ const SalesPage = () => {
   const filteredSales = sales.filter((s) => {
     const matchesDate = filterDate ? s.createdAt.startsWith(filterDate) : true;
 
-    const matchesSearch = s.product.name
+    const matchesSearch = s.product?.name
       .toLowerCase()
       .includes(searchTerm.toLowerCase());
 
     return matchesDate && matchesSearch;
   });
+
+  if (loading) {
+    return (
+      <div className="h-screen flex justify-center items-center">
+        <DominoLoader />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen p-6">
