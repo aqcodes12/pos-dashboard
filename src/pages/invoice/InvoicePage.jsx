@@ -20,7 +20,10 @@ const InvoicePage = () => {
       });
 
       if (res.data.success) {
-        setInvoices(res.data.data.reverse());
+        const sorted = res.data.data.sort(
+          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+        );
+        setInvoices(sorted);
       }
     } catch (err) {
       console.error("Failed loading invoices", err);
